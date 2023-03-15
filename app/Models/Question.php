@@ -24,4 +24,14 @@ class Question extends Model
         'option_5',
         'answer',
     ];
+
+    /**
+     * exam
+     *
+     * @return void
+     */
+    public function exam()
+    {
+        return $this->belongsTo(Exam::class);
+    }
 }

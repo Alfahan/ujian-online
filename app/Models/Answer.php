@@ -24,4 +24,14 @@ class Answer extends Model
         'answer',
         'is_correct',
     ];
+
+    /**
+     * question
+     *
+     * @return void
+     */
+    public function question()
+    {
+        return $this->belongsTo(Question::class);
+    }
 }
