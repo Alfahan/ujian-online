@@ -62,7 +62,7 @@
                                         <td class="text-center">{{ student.gender }}</td>
                                         <td>{{ student.password }}</td>
                                         <td class="text-center">
-
+                                            <Link :href="`/admin/students/${student.id}/edit`" class="btn btn-sm btn-info border-0 shadow me-2" type="button"><i class="fa fa-pencil-alt"></i></Link>
                                         </td>
                                     </tr>
                                 </tbody>
