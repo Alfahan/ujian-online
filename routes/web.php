@@ -37,5 +37,10 @@ Route::prefix('admin')->group(function() {
         Route::resource('/students', \App\Http\Controllers\Admin\StudentController::class, ['as' => 'admin']);
         //route resource exams
         Route::resource('/exams', \App\Http\Controllers\Admin\ExamController::class, ['as' => 'admin']);
+        //custom route for create question exam
+        Route::get('/exams/{exam}/questions/create', [\App\Http\Controllers\Admin\ExamController::class, 'createQuestion'])->name('admin.exams.createQuestion');
+        //custom route for store question exam
+        Route::post('/exams/{exam}/questions/store', [\App\Http\Controllers\Admin\ExamController::class, 'storeQuestion'])->name('admin.exams.storeQuestion');
+
     });
 });
