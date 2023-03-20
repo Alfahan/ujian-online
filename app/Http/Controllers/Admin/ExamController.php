@@ -289,4 +289,20 @@ class ExamController extends Controller
         //redirect
         return redirect()->route('admin.exams.show', $exam->id);
     }
+
+    /**
+     * destroyQuestion
+     *
+     * @param  mixed $exam
+     * @param  mixed $question
+     * @return void
+     */
+    public function destroyQuestion(Exam $exam, Question $question)
+    {
+        //delete question
+        $question->delete();
+
+        //redirect
+        return redirect()->route('admin.exams.show', $exam->id);
+    }
 }
