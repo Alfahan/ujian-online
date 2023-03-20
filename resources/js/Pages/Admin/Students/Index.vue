@@ -63,6 +63,7 @@
                                         <td>{{ student.password }}</td>
                                         <td class="text-center">
                                             <Link :href="`/admin/students/${student.id}/edit`" class="btn btn-sm btn-info border-0 shadow me-2" type="button"><i class="fa fa-pencil-alt"></i></Link>
+                                            <button @click.prevent="destroy(student.id)" class="btn btn-sm btn-danger border-0"><i class="fa fa-trash"></i></button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -100,6 +101,9 @@
         Inertia
     } from '@inertiajs/inertia';
 
+    //import sweet alert2
+    import Swal from 'sweetalert2';
+
     export default {
         //layout
         layout: LayoutAdmin,
@@ -131,10 +135,38 @@
                 });
             }
 
+            //define method destroy
+            const destroy = (id) => {
+                Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Anda tidak akan dapat mengembalikan ini!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    })
+                    .then((result) => {
+                        if (result.isConfirmed) {
+
+                            Inertia.delete(`/admin/students/${id}`);
+
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: 'Siswa Berhasil Dihapus!.',
+                                icon: 'success',
+                                timer: 2000,
+                                showConfirmButton: false,
+                            });
+                        }
+                    })
+            }
+
             //return
             return {
                 search,
                 handleSearch,
+                destroy,
             }
 
         }
