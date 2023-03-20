@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Classroom;
 use App\Models\Student;
 use Illuminate\Http\Request;
-
+use App\Imports\StudentsImport;
+use Maatwebsite\Excel\Facades\Excel;
 class StudentController extends Controller
 {
     /**
@@ -168,6 +169,35 @@ class StudentController extends Controller
 
         //delete student
         $student->delete();
+
+        //redirect
+        return redirect()->route('admin.students.index');
+    }
+
+    /**
+     * import
+     *
+     * @return void
+     */
+    public function import()
+    {
+        return inertia('Admin/Students/Import');
+    }
+
+    /**
+     * storeImport
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function storeImport(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ]);
+
+        // import data
+        Excel::import(new StudentsImport(), $request->file('file'));
 
         //redirect
         return redirect()->route('admin.students.index');
