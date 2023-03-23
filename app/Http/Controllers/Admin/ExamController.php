@@ -7,7 +7,9 @@ use App\Models\Lesson;
 use App\Models\Classroom;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Imports\QuestionsImport;
 use App\Models\Question;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ExamController extends Controller
 {
@@ -301,6 +303,37 @@ class ExamController extends Controller
     {
         //delete question
         $question->delete();
+
+        //redirect
+        return redirect()->route('admin.exams.show', $exam->id);
+    }
+
+    /**
+     * import
+     *
+     * @return void
+     */
+    public function import(Exam $exam)
+    {
+        return inertia('Admin/Questions/Import', [
+            'exam' => $exam
+        ]);
+    }
+
+    /**
+     * storeImport
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function storeImport(Request $request, Exam $exam)
+    {
+        $this->validate($request, [
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ]);
+
+        // import data
+        Excel::import(new QuestionsImport(), $request->file('file'));
 
         //redirect
         return redirect()->route('admin.exams.show', $exam->id);
