@@ -70,7 +70,7 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        'users' => [
+        'students' => [
             'driver' => 'eloquent',
             'model' => App\Models\Student::class,
         ],
