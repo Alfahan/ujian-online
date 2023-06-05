@@ -39,6 +39,12 @@ Route::prefix('student')->group(function() {
         //route exam confirmation
         Route::get('/exam-confirmation/{id}', [App\Http\Controllers\Student\ExamController::class, 'confirmation'])->name('student.exams.confirmation');
 
+        //route exam start
+        Route::get('/exam-start/{id}', [App\Http\Controllers\Student\ExamController::class, 'startExam'])->name('student.exams.startExam');
+
+        //route exam show
+        Route::get('/exam/{id}/{page}', [App\Http\Controllers\Student\ExamController::class, 'show'])->name('student.exams.show');
+
     });
 
 });
