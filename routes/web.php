@@ -36,6 +36,9 @@ Route::prefix('student')->group(function() {
         //route dashboard
         Route::get('/dashboard', App\Http\Controllers\Student\DashboardController::class)->name('student.dashboard');
 
+        //route exam confirmation
+        Route::get('/exam-confirmation/{id}', [App\Http\Controllers\Student\ExamController::class, 'confirmation'])->name('student.exams.confirmation');
+
     });
 
 });
