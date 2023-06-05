@@ -14,8 +14,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //cek session student
+    if(auth()->guard('student')->check()) {
+        return redirect()->route('student.dashboard');
+    }
+
+    //return view login
+    return \Inertia\Inertia::render('Student/Login/Index');
 });
+
+
+//login students
+Route::post('/students/login', \App\Http\Controllers\Student\LoginController::class)->name('student.login');
+
 
 //prefix "admin"
 Route::prefix('admin')->group(function() {
