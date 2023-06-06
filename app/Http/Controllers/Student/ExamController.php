@@ -217,4 +217,53 @@ class ExamController extends Controller
             'message' => 'Duration updated successfully.'
         ]);
     }
+
+
+     /**
+     * answerQuestion
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function answerQuestion(Request $request)
+    {
+        //update duration
+        $grade = Grade::where('exam_id', $request->exam_id)
+                ->where('exam_session_id', $request->exam_session_id)
+                ->where('student_id', auth()->guard('student')->user()->id)
+                ->first();
+
+        $grade->duration = $request->duration;
+        $grade->update();
+
+        //get question
+        $question = Question::find($request->question_id);
+
+        //cek apakah jawaban sudah benar
+        if($question->answer == $request->answer) {
+
+            //jawaban benar
+            $result = 'Y';
+        } else {
+
+            //jawaban salah
+            $result = 'N';
+        }
+
+        //get answer
+        $answer   = Answer::where('exam_id', $request->exam_id)
+                    ->where('exam_session_id', $request->exam_session_id)
+                    ->where('student_id', auth()->guard('student')->user()->id)
+                    ->where('question_id', $request->question_id)
+                    ->first();
+
+        //update jawaban
+        if($answer) {
+            $answer->answer     = $request->answer;
+            $answer->is_correct = $result;
+            $answer->update();
+        }
+
+        return redirect()->back();
+    }
 }

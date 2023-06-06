@@ -48,6 +48,9 @@ Route::prefix('student')->group(function() {
         //route exam update duration
         Route::put('/exam-duration/update/{grade_id}', [App\Http\Controllers\Student\ExamController::class, 'updateDuration'])->name('student.exams.update_duration');
 
+        //route answer question
+        Route::post('/exam-answer', [App\Http\Controllers\Student\ExamController::class, 'answerQuestion'])->name('student.exams.answerQuestion');
+
     });
 
 });

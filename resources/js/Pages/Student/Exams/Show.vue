@@ -33,7 +33,7 @@
 
                                         <button v-if="answer == question_active.answer" class="btn btn-info btn-sm w-100 shdaow">{{ options[index] }}</button>
 
-                                        <button v-else class="btn btn-outline-info btn-sm w-100 shdaow">{{ options[index] }}</button>
+                                        <button v-else @click.prevent="submitAnswer(question_active.question.exam.id, question_active.question.id, answer)" class="btn btn-outline-info btn-sm w-100 shdaow">{{ options[index] }}</button>
 
                                     </td>
                                     <td style="padding: 10px;">
@@ -217,6 +217,19 @@
                 Inertia.get(`/student/exam/${props.id}/${index + 1}`);
             });
 
+            //method submit answer
+            const submitAnswer = ((exam_id, question_id, answer) => {
+
+                Inertia.post('/student/exam-answer', {
+                    exam_id: exam_id,
+                    exam_session_id: props.exam_group.exam_session.id,
+                    question_id: question_id,
+                    answer: answer,
+                    duration: duration.value
+                });
+
+            });
+
             //return
             return {
                 options,
@@ -224,7 +237,8 @@
                 handleChangeDuration,
                 prevPage,
                 nextPage,
-                clickQuestion
+                clickQuestion,
+                submitAnswer
             }
 
         }
