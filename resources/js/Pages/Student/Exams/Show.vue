@@ -55,10 +55,10 @@
                 <div class="card-footer">
                     <div class="d-flex justify-content-between">
                         <div class="text-start">
-                            <button type="button" class="btn btn-gray-400 btn-sm btn-block mb-2">Sebelumnya</button>
+                            <button v-if="page > 1" @click.prevent="prevPage" type="button" class="btn btn-gray-400 btn-sm btn-block mb-2">Sebelumnya</button>
                         </div>
                         <div class="text-end">
-                            <button type="button" class="btn btn-gray-400 btn-sm">Selanjutnya</button>
+                            <button v-if="page < Object.keys(all_questions).length" @click.prevent="nextPage" type="button" class="btn btn-gray-400 btn-sm">Selanjutnya</button>
                         </div>
                     </div>
                 </div>
@@ -75,14 +75,11 @@
                         <div width="20%" style="width: 20%; float: left;">
                             <div style="padding: 5px;">
 
-                                <button v-if="index+1 == page"
-                                    class="btn btn-gray-400 btn-sm w-100">{{ index + 1 }}</button>
+                                <button @click.prevent="clickQuestion(index)" v-if="index+1 == page" class="btn btn-gray-400 btn-sm w-100">{{ index + 1 }}</button>
 
-                                <button v-if="index+1 != page && question.answer == 0"
-                                    class="btn btn-outline-info btn-sm w-100">{{ index + 1 }}</button>
+                                <button @click.prevent="clickQuestion(index)" v-if="index+1 != page && question.answer == 0" class="btn btn-outline-info btn-sm w-100">{{ index + 1 }}</button>
 
-                                <button v-if="index+1 != page && question.answer != 0"
-                                    class="btn btn-info btn-sm w-100">{{ index + 1 }}</button>
+                                <button @click.prevent="clickQuestion(index)" v-if="index+1 != page && question.answer != 0" class="btn btn-info btn-sm w-100">{{ index + 1 }}</button>
                             </div>
                         </div>
                     </div>
@@ -117,6 +114,10 @@
     //import axios
     import axios from 'axios';
 
+    //import inertia adapter
+    import {
+        Inertia
+    } from '@inertiajs/inertia';
 
     export default {
         //layout
@@ -179,11 +180,51 @@
 
             });
 
+            //metohd prevPage
+            const prevPage = (() => {
+
+                //update duration
+                axios.put(`/student/exam-duration/update/${props.duration.id}`, {
+                    duration: duration.value
+                });
+
+                //redirect to prevPage
+                Inertia.get(`/student/exam/${props.id}/${props.page - 1}`);
+
+            });
+
+            //method nextPage
+            const nextPage = (() => {
+
+                //update duration
+                axios.put(`/student/exam-duration/update/${props.duration.id}`, {
+                    duration: duration.value
+                });
+
+                //redirect to nextPage
+                Inertia.get(`/student/exam/${props.id}/${props.page + 1}`);
+            });
+
+            //method clickQuestion
+            const clickQuestion = ((index) => {
+
+                //update duration
+                axios.put(`/student/exam-duration/update/${props.duration.id}`, {
+                    duration: duration.value
+                });
+
+                //redirect to questin
+                Inertia.get(`/student/exam/${props.id}/${index + 1}`);
+            });
+
             //return
             return {
                 options,
                 duration,
-                handleChangeDuration
+                handleChangeDuration,
+                prevPage,
+                nextPage,
+                clickQuestion
             }
 
         }
