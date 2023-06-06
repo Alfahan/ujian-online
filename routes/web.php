@@ -51,6 +51,9 @@ Route::prefix('student')->group(function() {
         //route answer question
         Route::post('/exam-answer', [App\Http\Controllers\Student\ExamController::class, 'answerQuestion'])->name('student.exams.answerQuestion');
 
+        //route exam end
+        Route::post('/exam-end', [App\Http\Controllers\Student\ExamController::class, 'endExam'])->name('student.exams.endExam');
+
     });
 
 });

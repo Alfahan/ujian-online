@@ -11,7 +11,7 @@
                             <h5 class="mb-0">Soal No. <strong class="fw-bold">{{ page }}</strong></h5>
                         </div>
                         <div>
-                            <VueCountdown :time="duration" @progress="handleChangeDuration" v-slot="{ hours, minutes, seconds }">
+                            <VueCountdown :time="duration" @progress="handleChangeDuration" @end="showModalEndTimeExam = true" v-slot="{ hours, minutes, seconds }">
                                 <span class="badge bg-info p-2"> <i class="fa fa-clock"></i> {{ hours }} jam,
                                     {{ minutes }} menit, {{ seconds }} detik.</span>
                             </VueCountdown>
@@ -86,11 +86,47 @@
 
                 </div>
                 <div class="card-footer">
-                    <button class="btn btn-danger btn-md border-0 shadow w-100">Akhiri Ujian</button>
+                    <button @click="showModalEndExam = true" class="btn btn-danger btn-md border-0 shadow w-100">Akhiri Ujian</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- modal akhiri ujian -->
+    <div v-if="showModalEndExam" class="modal fade" :class="{ 'show': showModalEndExam }" tabindex="-1" aria-hidden="true" style="display:block;" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Akhiri Ujian ?</h5>
+                </div>
+                <div class="modal-body">
+                    Setelah mengakhiri ujian, Anda tidak dapat kembali ke ujian ini lagi. Yakin akan mengakhiri ujian?
+                </div>
+                <div class="modal-footer">
+                    <button @click.prevent="endExam" type="button" class="btn btn-primary">Ya, Akhiri</button>
+                    <button @click.prevent="showModalEndExam = false" type="button" class="btn btn-secondary">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal waktu ujian berakhir -->
+    <div v-if="showModalEndTimeExam" class="modal fade" :class="{ 'show': showModalEndTimeExam }" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" style="display:block;" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Waktu Habis !</h5>
+                </div>
+                <div class="modal-body">
+                    Waktu ujian sudah berakhir!. Klik <strong class="fw-bold">Ya</strong> untuk mengakhiri ujian.
+                </div>
+                <div class="modal-footer">
+                    <button @click.prevent="endExam" type="button" class="btn btn-primary">Ya</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 
 <script>
@@ -118,6 +154,9 @@
     import {
         Inertia
     } from '@inertiajs/inertia';
+
+    //import sweet alert2
+    import Swal from 'sweetalert2';
 
     export default {
         //layout
@@ -230,6 +269,30 @@
 
             });
 
+            //define state modal
+            const showModalEndExam      = ref(false);
+            const showModalEndTimeExam  = ref(false);
+
+            //method endExam
+            const endExam = (() => {
+
+                Inertia.post('/student/exam-end', {
+                    exam_group_id: props.exam_group.id,
+                    exam_id: props.exam_group.exam.id,
+                    exam_session_id: props.exam_group.exam_session.id,
+                });
+
+                //show success alert
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Ujian Selesai!.',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 4000
+                });
+
+            });
+
             //return
             return {
                 options,
@@ -238,7 +301,10 @@
                 prevPage,
                 nextPage,
                 clickQuestion,
-                submitAnswer
+                submitAnswer,
+                showModalEndExam,
+                showModalEndTimeExam,
+                endExam,
             }
 
         }

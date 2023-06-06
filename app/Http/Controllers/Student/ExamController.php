@@ -266,4 +266,40 @@ class ExamController extends Controller
 
         return redirect()->back();
     }
+
+    /**
+     * endExam
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function endExam(Request $request)
+    {
+        //count jawaban benar
+        $count_correct_answer = Answer::where('exam_id', $request->exam_id)
+                            ->where('exam_session_id', $request->exam_session_id)
+                            ->where('student_id', auth()->guard('student')->user()->id)
+                            ->where('is_correct', 'Y')
+                            ->count();
+
+        //count jumlah soal
+        $count_question = Question::where('exam_id', $request->exam_id)->count();
+
+        //hitung nilai
+        $grade_exam = round($count_correct_answer/$count_question*100, 2);
+
+        //update nilai di table grades
+        $grade = Grade::where('exam_id', $request->exam_id)
+                ->where('exam_session_id', $request->exam_session_id)
+                ->where('student_id', auth()->guard('student')->user()->id)
+                ->first();
+
+        $grade->end_time        = Carbon::now();
+        $grade->total_correct   = $count_correct_answer;
+        $grade->grade           = $grade_exam;
+        $grade->update();
+
+        //redirect hasil
+        return redirect()->route('student.exams.resultExam', $request->exam_group_id);
+    }
 }
