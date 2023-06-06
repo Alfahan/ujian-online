@@ -54,6 +54,10 @@ Route::prefix('student')->group(function() {
         //route exam end
         Route::post('/exam-end', [App\Http\Controllers\Student\ExamController::class, 'endExam'])->name('student.exams.endExam');
 
+        //route exam result
+        Route::get('/exam-result/{exam_group_id}', [App\Http\Controllers\Student\ExamController::class, 'resultExam'])->name('student.exams.resultExam');
+
+
     });
 
 });

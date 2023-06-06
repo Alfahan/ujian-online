@@ -302,4 +302,31 @@ class ExamController extends Controller
         //redirect hasil
         return redirect()->route('student.exams.resultExam', $request->exam_group_id);
     }
+
+     /**
+     * resultExam
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function resultExam($exam_group_id)
+    {
+        //get exam group
+        $exam_group = ExamGroup::with('exam.lesson', 'exam_session', 'student.classroom')
+                ->where('student_id', auth()->guard('student')->user()->id)
+                ->where('id', $exam_group_id)
+                ->first();
+
+        //get grade / nilai
+        $grade = Grade::where('exam_id', $exam_group->exam->id)
+                ->where('exam_session_id', $exam_group->exam_session->id)
+                ->where('student_id', auth()->guard('student')->user()->id)
+                ->first();
+
+        //return with inertia
+        return inertia('Student/Exams/Result', [
+            'exam_group' => $exam_group,
+            'grade'      => $grade,
+        ]);
+    }
 }
