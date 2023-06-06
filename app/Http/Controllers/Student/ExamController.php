@@ -198,4 +198,23 @@ class ExamController extends Controller
             'duration'          => $duration,
         ]);
     }
+
+    /**
+     * updateDuration
+     *
+     * @param  mixed $request
+     * @param  mixed $grade_id
+     * @return void
+     */
+    public function updateDuration(Request $request, $grade_id)
+    {
+        $grade = Grade::find($grade_id);
+        $grade->duration = $request->duration;
+        $grade->update();
+
+        return response()->json([
+            'success'  => true,
+            'message' => 'Duration updated successfully.'
+        ]);
+    }
 }

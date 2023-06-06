@@ -11,7 +11,10 @@
                             <h5 class="mb-0">Soal No. <strong class="fw-bold">{{ page }}</strong></h5>
                         </div>
                         <div>
-                            <span class="badge bg-info p-2"> <i class="fa fa-clock"></i> Timer Disini</span>
+                            <VueCountdown :time="duration" @progress="handleChangeDuration" v-slot="{ hours, minutes, seconds }">
+                                <span class="badge bg-info p-2"> <i class="fa fa-clock"></i> {{ hours }} jam,
+                                    {{ minutes }} menit, {{ seconds }} detik.</span>
+                            </VueCountdown>
                         </div>
                     </div>
                 </div>
@@ -103,6 +106,18 @@
         Link
     } from '@inertiajs/inertia-vue3';
 
+    //import ref
+    import {
+        ref
+    } from 'vue';
+
+    //import VueCountdown
+    import VueCountdown from '@chenfengyuan/vue-countdown';
+
+    //import axios
+    import axios from 'axios';
+
+
     export default {
         //layout
         layout: LayoutStudent,
@@ -110,7 +125,8 @@
         //register components
         components: {
             Head,
-            Link
+            Link,
+            VueCountdown
         },
 
         //props
@@ -131,9 +147,43 @@
             //define options for answer
             let options = ["A", "B", "C", "D", "E"];
 
+            //define state counter
+            const counter = ref(0);
+
+            //define state duration
+            const duration = ref(props.duration.duration);
+
+            //handleChangeDuration
+            const handleChangeDuration = (() => {
+
+                //decrement duration
+                duration.value = duration.value - 1000;
+
+                //increment counter
+                counter.value = counter.value + 1;
+
+                //cek jika durasi di atas 0
+                if (duration.value > 0) {
+
+                    //update duration if 10 seconds
+                    if (counter.value % 10 == 1) {
+
+                        //update duration
+                        axios.put(`/student/exam-duration/update/${props.duration.id}`, {
+                            duration: duration.value
+                        })
+
+                    }
+
+                }
+
+            });
+
             //return
             return {
                 options,
+                duration,
+                handleChangeDuration
             }
 
         }
